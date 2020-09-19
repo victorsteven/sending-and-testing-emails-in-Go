@@ -59,6 +59,31 @@ func TestNewWelcome_WrongInput(t *testing.T) {
 	assert.EqualValues(t, response.Body, "The email should be a valid email")
 }
 
+func TestNewWelcome_RequiredNotCorrect(t *testing.T) {
+
+	inputJSON := `{"name": 123, "email": "victor@example.com"}`
+
+	req, err := http.NewRequest(http.MethodPost, "/welcome", bytes.NewBufferString(inputJSON))
+	if err != nil {
+		t.Errorf("this is the error: %v\n", err)
+	}
+
+	r := gin.Default()
+	r.POST("/welcome", w.WelcomeMail)
+	rr := httptest.NewRecorder()
+	r.ServeHTTP(rr, req)
+
+	var response = MailResponse{}
+	err = json.Unmarshal(rr.Body.Bytes(), &response)
+	if err != nil {
+		t.Errorf("cannot unmarshal response: %v\n", err)
+	}
+
+	assert.EqualValues(t, rr.Code, 422)
+	assert.EqualValues(t, response.Status, 422)
+	assert.EqualValues(t, response.Body, "Please provide valid inputs")
+}
+
 
 func TestNewWelcome_Success(t *testing.T) {
 

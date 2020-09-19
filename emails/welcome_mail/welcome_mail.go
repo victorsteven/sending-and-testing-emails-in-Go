@@ -84,15 +84,16 @@ func (s *service) sendEmailUsingGmail(m *helpers.WelcomeMail) (bool, error) {
 	doc.Write([]byte(fmt.Sprintf("Subject:"+m.Subject+"\n%s\n\n", mime)))
 
 	err = t.Execute(&doc, smtpData)
-
 	if err != nil {
 		return false, err
 	}
 
+	emails := []string{m.Email} //or
+
 	err = smtp.SendMail(gmailServer+":"+gmailPort,
 		auth,
 		gmailUsername,
-		[]string{m.Email},
+		emails,
 		doc.Bytes())
 
 	if err != nil {

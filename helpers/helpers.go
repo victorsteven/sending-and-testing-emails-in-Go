@@ -13,6 +13,7 @@ type WelcomeMail struct {
 	Temp      string
 	Name      string
 	Email     string
+	Emails    []string
 	Subject   string
 }
 
